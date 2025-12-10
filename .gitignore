@@ -1,0 +1,17 @@
+# 实验输出和日志
+output/
+
+
+# 模型权重文件（如果你以后会有）
+*.pth
+*.pt
+*.bin
+
+# 数据集和环境
+datasets/
+vitb_dyt_tiny/  # 这是你之前提到的另一个大文件夹
+
+# 临时文件和Python编译文件
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

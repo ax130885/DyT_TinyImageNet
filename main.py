@@ -203,6 +203,11 @@ def get_args_parser():
                         help="Save model checkpoints as W&B Artifacts.")
     
     parser.add_argument('--dynamic_tanh', type=str2bool, default=False)
+    # ... 原有的 parser.add_argument('--dynamic_tanh', ...) 后面添加：
+    
+    parser.add_argument('--dyt_variant', default='scalar', type=str,
+                        choices=['scalar', 'channel'],
+                        help='DyT parameterization variant: scalar (default) or channel')
 
     return parser
 
@@ -300,8 +305,11 @@ def main(args):
     else:
         raise ValueError(f"Unrecognized model: {args.model}")
 
+    # 找到这一行：
     if args.dynamic_tanh:
-        model = convert_ln_to_dyt(model)
+        # 修改为：
+        print(f"Converting LayerNorm to DynamicTanh (Variant: {args.dyt_variant})")
+        model = convert_ln_to_dyt(model, variant=args.dyt_variant)
 
     if args.finetune:
         if args.finetune.startswith('https'):
