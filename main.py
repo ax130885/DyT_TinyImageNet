@@ -208,6 +208,8 @@ def get_args_parser():
     parser.add_argument('--dyt_variant', default='scalar', type=str,
                         choices=['scalar', 'channel'],
                         help='DyT parameterization variant: scalar (default) or channel')
+    parser.add_argument('--alpha_init_value', default=0.5, type=float,
+                        help='Initial value for alpha parameter in DynamicTanh (default: 0.5)')
 
     return parser
 
@@ -308,8 +310,8 @@ def main(args):
     # 找到这一行：
     if args.dynamic_tanh:
         # 修改为：
-        print(f"Converting LayerNorm to DynamicTanh (Variant: {args.dyt_variant})")
-        model = convert_ln_to_dyt(model, variant=args.dyt_variant)
+        print(f"Converting LayerNorm to DynamicTanh (Variant: {args.dyt_variant}, Alpha Init: {args.alpha_init_value})")
+        model = convert_ln_to_dyt(model, variant=args.dyt_variant, alpha_init_value=args.alpha_init_value)
 
     if args.finetune:
         if args.finetune.startswith('https'):
