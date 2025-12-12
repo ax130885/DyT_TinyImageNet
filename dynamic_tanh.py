@@ -47,19 +47,20 @@ class DynamicTanh(nn.Module):
         return f"normalized_shape={self.normalized_shape}, variant={self.variant}, alpha_init={self.alpha_init_value}"
 
 # [关键修改] 转换函数增加 variant 参数
-def convert_ln_to_dyt(module, variant='scalar'):
+def convert_ln_to_dyt(module, variant='scalar', alpha_init_value=0.5):
     module_output = module
     if isinstance(module, nn.LayerNorm):
-        # 将 variant 传递给 DynamicTanh
+        # 将 variant 和 alpha_init_value 传递给 DynamicTanh
         module_output = DynamicTanh(
             module.normalized_shape, 
             not isinstance(module, LayerNorm2d),
+            alpha_init_value=alpha_init_value,
             variant=variant
         )
     
     # 递归替换子模块
     for name, child in module.named_children():
-        module_output.add_module(name, convert_ln_to_dyt(child, variant=variant))
+        module_output.add_module(name, convert_ln_to_dyt(child, variant=variant, alpha_init_value=alpha_init_value))
     
     del module
     return module_output
